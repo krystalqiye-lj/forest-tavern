@@ -1,0 +1,470 @@
+@import url("./forest-drawers.css?v=1.3.0");
+@import url("./forest-extensions.css?v=1.3.0");
+@import url("./forest-reader.css?v=1.3.1");
+
+#forest-tavern-frame {
+    position: fixed;
+    inset: 0;
+    z-index: 101;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    border: 0;
+    background: #263c2d;
+}
+
+#forest-tavern-frame[hidden] {
+    display: none;
+}
+
+body:is(.forest-tavern-active, .forest-tavern-reading) #qinghe-library { display: none !important; }
+body:is(.forest-tavern-active, .forest-tavern-reading) #top-bar,
+body:is(.forest-tavern-active, .forest-tavern-reading) #top-settings-holder > button,
+body:is(.forest-tavern-active, .forest-tavern-reading) #top-settings-holder .drawer-toggle,
+body:is(.forest-tavern-active, .forest-tavern-reading) #top-settings-holder .drawer-content:not([data-forest-drawer]) {
+    visibility: hidden;
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) #top-settings-holder {
+    pointer-events: none;
+    overflow: visible;
+}
+body.forest-tavern-active #sheld { visibility: hidden; }
+
+body.forest-tavern-reading #forest-tavern-frame {
+    z-index: 20;
+    pointer-events: none;
+}
+
+body.forest-tavern-reading #sheld {
+    --forest-paper: #f7eedc;
+    --forest-ink: #302a20;
+    --forest-moss: #45513a;
+    --forest-page-pad: clamp(24px, 4.3vw, 61px);
+    --forest-page-gap: 14px;
+    --forest-reader-width: min(750px, calc(100dvw - 44px));
+    --forest-serif: "Songti SC", "Noto Serif CJK SC", "Noto Serif SC", "SimSun", "LXGW 975 Yuan SC 400W", serif;
+    --SmartThemeBodyColor: var(--forest-ink);
+    --SmartThemeEmColor: #615543;
+    --SmartThemeQuoteColor: #466041;
+    --SmartThemeUnderlineColor: #554e36;
+    --SmartThemeBlurTintColor: #f4ead1;
+    --SmartThemeBorderColor: #b6a383;
+    --black30a: #bbaa8e26;
+    position: fixed !important;
+    inset: max(var(--forest-page-gap), env(safe-area-inset-top, 0px)) auto
+        auto calc((100dvw - var(--forest-reader-width)) / 2) !important;
+    width: var(--forest-reader-width) !important;
+    height: calc(100dvh - max(var(--forest-page-gap), env(safe-area-inset-top, 0px))
+        - max(var(--forest-page-gap), env(safe-area-inset-bottom, 0px))) !important;
+    max-height: none;
+    min-height: 0;
+    margin: 0 !important;
+    z-index: 30;
+    color: var(--forest-ink);
+    isolation: isolate;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    scrollbar-color: #a79878 transparent;
+    animation: forest-open-book .28s ease-out;
+}
+
+body.forest-tavern-reading #sheld::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: url("./reading-paper-edge.webp") center / 100% 100% no-repeat;
+}
+
+body.forest-tavern-reading #sheld.qinghe-wide-reader {
+    --forest-reader-width: min(1080px, calc(100dvw - 44px));
+}
+
+.forest-book-head {
+    position: relative;
+    z-index: 31;
+    flex: 0 0 auto;
+    min-width: 0;
+    min-height: 136px;
+    padding: 28px 165px 16px;
+    text-align: center;
+}
+
+.forest-book-head[hidden],
+.forest-bookmark[hidden],
+.forest-addons-toggle[hidden],
+.forest-plant-note[hidden] {
+    display: none;
+}
+
+.forest-book-title {
+    overflow: hidden;
+    margin: 0;
+    color: var(--forest-moss);
+    font: 700 clamp(24px, 3vw, 34px)/1.38 var(--forest-serif);
+    letter-spacing: .08em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-shadow: none;
+}
+
+.forest-back {
+    position: absolute;
+    top: 16px;
+    left: var(--forest-page-pad);
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 44px;
+    padding: 0 9px;
+    white-space: nowrap;
+    border: 1px solid #ae9e765c;
+    border-radius: 5px 3px 5px 5px;
+    color: #3e4e35;
+    background: #e9dfc7;
+    font: 600 12px/1.15 var(--mainFontFamily);
+    cursor: pointer;
+}
+.forest-back span { font: 23px/.65 Georgia, serif; }
+.forest-back:hover { background: #e0e7cf; }
+.forest-back:focus-visible { outline: 2px solid #6e8256; outline-offset: 2px; }
+
+.forest-book-head::after {
+    content: "";
+    display: block;
+    width: min(150px, 100%);
+    height: 1px;
+    margin: 10px auto 0;
+    background: linear-gradient(90deg, transparent, #8a825d8a, transparent);
+}
+
+.forest-book-tabs {
+    position: absolute;
+    inset: 12px var(--forest-page-pad) auto auto;
+    display: flex;
+    align-items: start;
+    justify-content: end;
+    gap: 1px;
+}
+
+.forest-bookmark {
+    position: relative;
+    width: 61px;
+    height: 105px;
+    padding: 13px 6px 9px;
+    color: var(--forest-moss);
+    background: #dcc89c url("./reading-paper.jpg") center / 100% 100% no-repeat;
+    background-blend-mode: multiply;
+    border: 1px solid #bb9f70;
+    border-radius: 4px 3px 11px 7px / 7px 9px 4px 10px;
+    box-shadow: 3px 5px 7px #4a381f57;
+    transform: rotate(-6deg) translateY(5px);
+    cursor: pointer;
+}
+
+.forest-bookmark::before {
+    content: "";
+    position: absolute;
+    top: -9px;
+    left: calc(50% - 6px);
+    width: 12px;
+    height: 23px;
+    background: linear-gradient(90deg, #51412b, #b29662 30%, #846a46 52%, #be9d68 73%, #60472a);
+    border: 1px solid #6e5438;
+    border-radius: 7px 7px 2px 2px;
+    box-shadow: 1px 1px 2px #3a2c2640;
+}
+
+.forest-bookmark:hover {
+    transform: rotate(-3deg) translateY(7px);
+}
+
+.forest-bookmark .forest-book-plant {
+    filter: saturate(.70) contrast(1.08);
+}
+
+.forest-book-plant {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center bottom;
+}
+
+.forest-photo-tab {
+    position: relative;
+    display: block;
+    box-sizing: border-box;
+    width: 67px;
+    height: 88px;
+    padding: 4px 4px 13px;
+    margin: 7px 0 0 -3px;
+    transform: rotate(7deg);
+    background: #f3e8cd url("./reading-paper.jpg") center / cover;
+    border: 1px solid #b3a486;
+    border-radius: 2px 3px 4px 2px;
+    box-shadow: 2px 4px 7px #49372355;
+    cursor: pointer;
+}
+
+.forest-photo-tab::before {
+    position: absolute;
+    top: -8px;
+    right: 8px;
+    width: 13px;
+    height: 24px;
+    transform: rotate(11deg);
+    content: "";
+    border: 1.5px solid #a0855e;
+    border-block-end-color: #765d3b;
+    border-radius: 6px 6px 5px 5px;
+    box-shadow: 1px 1px 2px #4d3f2b5e;
+    pointer-events: none;
+}
+
+.forest-photo-tab img {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #66583b57;
+    object-fit: cover;
+    object-position: 50% 31%;
+    filter: saturate(.84) sepia(.12);
+    pointer-events: none;
+}
+
+.forest-photo-tab:hover { transform: rotate(4deg) translateY(2px); }
+.forest-book-tabs button:focus-visible { outline: 2px solid #577149; outline-offset: 2px; }
+
+.forest-photo-note {
+    box-sizing: border-box;
+    position: fixed;
+    width: max-content;
+    max-width: min(480px, calc(100vw - 32px));
+    padding: clamp(10px, 2.4vw, 18px);
+    margin: auto;
+    overflow: visible;
+    color: #394831;
+    background: transparent url("./reading-paper-edge.webp") center / 100% 100% no-repeat;
+    border: 0;
+    filter: drop-shadow(0 8px 13px #17251c85);
+}
+
+.forest-photo-note::backdrop { background: #17241994; }
+.forest-photo-note figure { margin: 0; }
+.forest-photo-note figure img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: min(440px, calc(100vw - 76px));
+    max-height: min(68dvh, 650px);
+    margin-inline: auto;
+    object-fit: contain;
+    border-radius: 2px;
+}
+.forest-photo-note figcaption {
+    margin-top: 8px;
+    overflow-wrap: anywhere;
+    font: 700 15px/1.45 var(--forest-serif);
+}
+.forest-photo-close {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid #a69670;
+    border-radius: 50%;
+    color: #394831;
+    background: #f3e9cf;
+    font: 24px/1 Georgia, serif;
+    cursor: pointer;
+}
+
+.forest-plant-note {
+    position: absolute;
+    top: 127px;
+    right: var(--forest-page-pad);
+    width: 154px;
+    padding: 10px;
+    color: var(--forest-moss);
+    background: transparent url("./reading-paper-edge.webp") center / 100% 100% no-repeat;
+    border: 0;
+    filter: drop-shadow(0 8px 13px #17251c85);
+}
+
+body.forest-tavern-reading #sheld:not(.forest-show-addons) #qr--bar[data-forest-addon],
+body.forest-tavern-reading #sheld:not(.forest-show-addons) #qr--bar [data-forest-addon],
+body.forest-tavern-reading:not(:has(#sheld.forest-show-addons)) :is(#xhs-float-btn, #xhs-fab) {
+    display: none !important;
+}
+
+.forest-plant-note .forest-book-plant {
+    height: auto;
+    aspect-ratio: 1.44;
+}
+
+.forest-plant-note strong {
+    display: block;
+    padding-top: 6px;
+    font: 700 15px/1.3 var(--forest-serif);
+}
+
+body.forest-tavern-reading #sheld #chat {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    padding: 0 var(--forest-page-pad) 14px;
+    background: transparent !important;
+    border-inline: 0;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    text-shadow: none;
+    overscroll-behavior-y: contain;
+}
+
+body.forest-tavern-reading #sheld #chat .mes {
+    --avatar-base-height: 25px;
+    --avatar-base-width: 25px;
+    width: 100%;
+    margin: 0;
+    padding: 15px 0;
+    border: 0;
+    border-radius: 0;
+}
+
+body.forest-tavern-reading #sheld #chat .mes:not(.selected) {
+    background: transparent;
+}
+
+body.forest-tavern-reading #sheld #chat .mes.selected {
+    background: #a66f692e;
+}
+
+body.forest-tavern-reading #sheld #chat .mes_block .ch_name {
+    color: var(--forest-moss);
+    font: 700 13px/1.5 var(--mainFontFamily);
+}
+
+body.forest-tavern-reading #sheld #chat .mes[is_user="true"] .ch_name {
+    color: #785b3d;
+}
+
+body.forest-tavern-reading.documentstyle #sheld #chat .mes_block .ch_name .name_text {
+    display: inline !important;
+}
+
+body.forest-tavern-reading #sheld .qinghe-reader-bar:not([hidden]) {
+    padding-inline: var(--forest-page-pad);
+    background: transparent;
+    border-color: #97866235;
+}
+
+body.forest-tavern-reading #sheld .qinghe-reader-bar button {
+    background: #f0e6cc;
+    border-color: #c6b68f;
+}
+
+body.forest-tavern-reading #sheld #form_sheld {
+    flex: 0 0 auto;
+    padding: 8px var(--forest-page-pad) 11px;
+    background: transparent;
+}
+
+body.forest-tavern-reading #sheld #send_form {
+    border: 1px solid #b9a787;
+    border-radius: 17px;
+    box-shadow: inset 0 1px #fff8e8, 0 2px 4px #62512f22;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+body.forest-tavern-reading #sheld #send_textarea {
+    min-width: 0;
+    text-shadow: none;
+}
+
+body.forest-tavern-reading #sheld #send_textarea::placeholder {
+    color: #73664c;
+}
+
+body.forest-tavern-reading #sheld #send_form:has(#send_textarea:focus-visible) {
+    outline: 1px solid #718064;
+}
+
+@keyframes forest-open-book {
+    from {
+        opacity: .55;
+        transform: translateY(7px);
+    }
+}
+
+@media (max-width: 660px) {
+    body.forest-tavern-reading #sheld,
+    body.forest-tavern-reading #sheld.qinghe-wide-reader {
+        --forest-page-pad: 13px;
+        --forest-page-gap: 7px;
+        --forest-reader-width: calc(100dvw - 2 * max(6px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)));
+        padding-bottom: 0;
+        min-width: 0 !important;
+        max-height: none;
+    }
+
+    .forest-book-head {
+        min-height: 92px;
+        padding: 17px 104px 8px 85px;
+    }
+    .forest-book-title { font-size: clamp(19px, 6vw, 24px); }
+    .forest-back { top: 8px; padding-inline: 6px; }
+
+    .forest-book-tabs { top: 9px; }
+    .forest-bookmark {
+        width: 39px;
+        height: 63px;
+        padding: 8px 3px 4px;
+    }
+    .forest-bookmark::before { width: 8px; height: 15px; left: calc(50% - 4px); top: -4px; }
+    .forest-photo-tab { width: 44px; height: 59px; padding: 3px 3px 7px; margin-top: 5px; }
+    .forest-photo-tab::before { right: 4px; top: -6px; width: 9px; height: 15px; }
+
+    .forest-plant-note {
+        top: 78px;
+    }
+
+    body.forest-tavern-reading #sheld #chat .mes {
+        --avatar-base-height: 20px;
+        --avatar-base-width: 20px;
+        padding-block: 12px;
+    }
+
+    body.forest-tavern-reading #sheld #form_sheld {
+        padding-block: 5px 7px;
+    }
+    body.forest-tavern-reading #sheld #chat .mes .mes_text {
+        overflow-wrap: anywhere;
+    }
+    body.forest-tavern-reading #sheld #chat .mes :is(img, video, iframe) {
+        max-inline-size: 100%;
+    }
+}
+
+@media (max-height: 510px) and (max-width: 900px) {
+    .forest-book-head { min-height: 72px; padding-block: 12px 6px; }
+    .forest-book-tabs { top: 6px; }
+    .forest-bookmark { width: 37px; height: 49px; }
+    .forest-photo-tab { width: 41px; height: 49px; }
+    .forest-plant-note { top: 70px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.forest-tavern-reading #sheld {
+        animation: none;
+    }
+}

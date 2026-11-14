@@ -1,0 +1,293 @@
+@font-face {
+    font-family: "林间圆体";
+    src: url("./fonts/round/LXGW975YuanSC-400W.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "林间文楷";
+    src: url("./fonts/wenkai/LXGWWenKai-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "林间宋体";
+    src: url("./fonts/serif/SourceHanSerifCN-Regular.otf") format("opentype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "林间黑体";
+    src: url("./fonts/sans/SourceHanSansCN-Regular.otf") format("opentype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
+body.forest-tavern-reading #sheld {
+    --forest-reading-size: 18px;
+    --forest-reading-line: 1.8;
+    --forest-reading-font: "林间圆体";
+    --forest-page-light: 1;
+    --forest-letter-rule: #637356;
+    --forest-sheet-field: #faf1dd;
+}
+
+body.forest-tavern-reading #sheld[data-forest-reading-weather="rain"] {
+    --forest-page-light: .93;
+    --forest-sheet-field: #ede4d1;
+}
+body.forest-tavern-reading #sheld[data-forest-reading-weather="storm"] {
+    --forest-page-light: .85;
+    --forest-sheet-field: #e4dcca;
+}
+body.forest-tavern-reading #sheld::before {
+    filter: brightness(var(--forest-page-light)) drop-shadow(0 12px 19px #0c180ea0);
+    transition: filter .55s ease;
+}
+
+body.forest-tavern-reading .forest-reader-tools {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0 4px;
+    inline-size: fit-content;
+    max-width: 100%;
+    margin: 2px auto 0;
+}
+.forest-reader-tools [hidden], .forest-reader-panel [hidden], .forest-reader-panel[hidden] { display: none; }
+.forest-reader-tools button {
+    padding: 4px 7px;
+    min-height: 33px;
+    border: 0;
+    border-radius: 5px;
+    background: transparent;
+    color: #4e4937;
+    cursor: pointer;
+    font: 600 12px/1.35 "PingFang SC", "Microsoft YaHei", sans-serif;
+    white-space: nowrap;
+}
+.forest-reader-tools button:is(:hover, [aria-expanded="true"]) { background: #81744724; color: #364332; }
+.forest-reader-tools button:focus-visible,
+.forest-reader-panel :is(button, input, select):focus-visible { outline: 2px solid #617353; outline-offset: 1px; }
+.forest-reader-panel {
+    position: absolute;
+    z-index: 35;
+    inset: calc(100% - 13px) auto auto 50%;
+    translate: -50%;
+    width: min(330px, calc(100% - 26px));
+    max-height: min(53dvh, 430px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    text-align: start;
+    padding: 14px 15px 16px;
+    border: 0;
+    background: transparent url("./reading-paper-edge.webp") center / 100% 100% no-repeat;
+    color: #302d24;
+    filter: brightness(var(--forest-page-light)) drop-shadow(0 5px 10px #20271860);
+    font: 14px/1.45 "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+.forest-reader-panel :is(.forest-reader-field, .forest-reader-slider) {
+    display: grid;
+    align-items: center;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 7px 12px;
+    margin-block-end: 12px;
+}
+.forest-reader-slider output { text-align: end; font-variant-numeric: tabular-nums; }
+.forest-reader-slider input { grid-column: 1 / -1; min-height: 12px; accent-color: #596e50; }
+.forest-reader-panel :is(button, select) {
+    min-height: 41px;
+    padding: 6px 9px;
+    color: #353b2d;
+    background: #f9f1dc;
+    border: 1px solid #a28e674f;
+    border-radius: 5px;
+    font: 600 13px/1.3 "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+.forest-reader-panel select { width: 100%; min-width: 0; font-size: 16px; font-weight: 400; }
+.forest-reader-panel button { cursor: pointer; }
+.forest-reader-panel button:hover { background: #e9e2c8; }
+.forest-reader-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+}
+.forest-reader-links button { min-width: 0; }
+.forest-reader-links button:nth-child(-n+2) { color: #fff8e5; background: #4d5b42; }
+
+.forest-message-tools, .forest-user-signature { display: none; }
+body.forest-tavern-reading #sheld #chat .mes_block .ch_name .forest-message-tools {
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 auto;
+    padding: 0;
+    width: 36px;
+    min-height: 30px;
+    border: 0;
+    border-radius: 5px;
+    color: #635a44;
+    background: transparent;
+    font: 700 17px/1 Georgia, serif;
+    cursor: pointer;
+}
+body.forest-tavern-reading #sheld #chat .mes .forest-message-tools:is(:hover, [aria-expanded="true"]) {
+    background: #6e684820;
+    color: #333e2c;
+}
+body.forest-tavern-reading #sheld #chat .mes:has(.edit_textarea) .ch_name .forest-message-tools,
+body.forest-tavern-reading:is([data-generating="true"], [data-swiping="true"]) #sheld #chat .last_mes .ch_name .forest-message-tools {
+    display: none;
+}
+body.forest-tavern-reading #sheld #chat .mes {
+    padding-block: clamp(11px, 2vw, 20px);
+    align-items: stretch;
+}
+body.forest-tavern-reading #sheld #chat .mes + .mes { border-top: 0; }
+body.forest-tavern-reading #sheld #chat .mes .mes_block {
+    padding-inline: 0;
+    flex: 1 1 auto;
+    width: 100%;
+}
+body.forest-tavern-reading #sheld #chat .mes[is_user="true"] .mes_block {
+    padding-inline-start: 13px;
+    border-inline-start: 2px solid var(--forest-letter-rule);
+}
+body.forest-tavern-reading #sheld #chat .mes > .mesAvatarWrapper { display: none; }
+body.forest-tavern-reading #sheld #chat .mes[is_user="true"] .ch_name .name_text { display: none !important; }
+body.forest-tavern-reading #sheld #chat .mes[is_user="true"] .forest-user-signature {
+    display: inline;
+    color: #4c6045;
+}
+body.forest-tavern-reading #sheld #chat .mes .ch_name { min-height: 30px; align-items: center; row-gap: 0; }
+body.forest-tavern-reading #sheld #chat .mes:not([data-forest-message-tools]) :is(.timestamp, .timestamp-icon, .mes_buttons) {
+    display: none !important;
+}
+body.forest-tavern-reading #sheld #chat .mes[data-forest-message-tools]:not(:has(.edit_textarea)) .mes_buttons {
+    display: flex !important;
+    order: 4;
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+body.forest-tavern-reading #sheld #chat .mes[data-forest-message-tools] .mes_buttons .extraMesButtonsHint { display: none !important; }
+body.forest-tavern-reading #sheld #chat .mes[data-forest-message-tools] .mes_buttons .extraMesButtons {
+    display: flex !important;
+    flex-wrap: wrap;
+    overflow: visible;
+}
+body.forest-tavern-reading #sheld #chat .mes[data-forest-message-tools] .ch_name .timestamp {
+    display: inline !important;
+    color: #615640;
+    font-size: 11px;
+    opacity: 1;
+}
+body.forest-tavern-reading #sheld #chat .mes :is(.mes_buttons, .mes_edit_buttons) .mes_button {
+    opacity: .82;
+    filter: none;
+    padding: 6px;
+    color: #46513a;
+}
+body.forest-tavern-reading #sheld #chat .mes :is(.mes_text, .mes_reasoning),
+body.forest-tavern-reading #sheld #chat .mes .mes_text .edit_textarea,
+body.forest-tavern-reading #sheld #send_textarea {
+    font-family: var(--forest-reading-font), "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-size: var(--forest-reading-size);
+    font-weight: 400;
+    line-height: var(--forest-reading-line);
+}
+body.forest-tavern-reading #sheld #chat .mes .mes_text {
+    padding-block: 0;
+    padding-inline: 0;
+}
+body.forest-tavern-reading #sheld #chat .mes .mes_text > :is(p, blockquote, ul, ol) { margin-block: .22em .68em; }
+body.forest-tavern-reading #sheld #chat .mes .mes_text > :last-child { margin-block-end: 0; }
+body.forest-tavern-reading #sheld #chat .mes .mes_text :is(img, iframe, video) { max-inline-size: 100%; }
+body.forest-tavern-reading #sheld #chat .mes.swipes_visible,
+body.forest-tavern-reading #sheld #chat .mes.last_swipe { padding-bottom: 48px; }
+body.forest-tavern-reading #sheld #chat .mes .swipe_left { left: calc(50% - 65px); bottom: 2px; }
+body.forest-tavern-reading #sheld #chat .mes .swipeRightBlock {
+    display: grid;
+    grid-template-columns: 42px 44px;
+    align-items: center;
+    right: calc(50% - 65px);
+    bottom: 2px;
+    height: 44px;
+}
+body.forest-tavern-reading #sheld #chat .mes :is(.swipe_left, .swipe_right) {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    font-size: 14px;
+    line-height: 1;
+    color: #46513a;
+}
+body.forest-tavern-reading #sheld #chat .mes .swipe_right { grid-area: 1 / 2; }
+body.forest-tavern-reading #sheld #chat .mes .swipes-counter {
+    grid-area: 1 / 1;
+    display: grid;
+    place-items: center;
+    min-width: 42px;
+    height: 44px;
+    margin: 0;
+    color: #635940;
+    opacity: .78;
+}
+
+body.forest-tavern-reading #sheld #send_form { background: var(--forest-sheet-field); transition: background .55s ease; }
+body.forest-tavern-reading #sheld #nonQRFormItems :is(#options_button, #send_but) {
+    --forest-compose-icon: url("./icons/book-menu.svg");
+    position: relative;
+    width: 44px !important;
+    min-width: 44px;
+    min-height: 44px;
+    height: 44px !important;
+    padding: 0;
+    color: #526147;
+    background: transparent !important;
+    border: 0;
+    cursor: pointer;
+}
+body.forest-tavern-reading #sheld #nonQRFormItems #send_but { --forest-compose-icon: url("./icons/send-letter.svg"); color: #394d36; }
+body.forest-tavern-reading #sheld #nonQRFormItems :is(#options_button, #send_but) > :is(.qinghe-action-text, svg) { display: none !important; }
+body.forest-tavern-reading #sheld #nonQRFormItems :is(#options_button, #send_but)::before {
+    position: absolute;
+    inset: 9px;
+    content: "" !important;
+    background: currentColor;
+    mask: var(--forest-compose-icon) center / contain no-repeat;
+    -webkit-mask: var(--forest-compose-icon) center / contain no-repeat;
+}
+body.forest-tavern-reading #sheld #nonQRFormItems :is(#options_button, #send_but):hover { color: #334630; border-radius: 9px; background: #a89b6e30 !important; }
+
+body:is(.forest-tavern-active, .forest-tavern-reading) [data-forest-widget-inactive],
+body.forest-tavern-active :is([data-forest-chat-widget], #divine8-root, #divine8-screen, #divine-st-hub, #xhs-float-btn, #xhs-fab, #ins-persistent-audio-v2, #zxw-pixel-sphere) {
+    display: none !important;
+}
+body.forest-tavern-active[data-divine-card] #forest-tavern-frame { visibility: visible; }
+body.forest-tavern-reading #sheld #chat,
+body.forest-tavern-reading #sheld #chat .mes:not(.selected),
+body.forest-tavern-reading #sheld #chat .mes .mes_block { box-shadow: none; }
+
+@media (max-width: 660px) {
+    body.forest-tavern-reading #sheld { --forest-reading-size: 17px; }
+    body.forest-tavern-reading #sheld .forest-book-head { min-height: 0; padding: 16px var(--forest-page-pad) 5px; }
+    .forest-book-head .forest-book-title { margin-inline: 72px 89px; min-height: 40px; display: block; }
+    .forest-book-head .forest-reader-tools { gap: 0 5px; margin-top: 10px; }
+    .forest-reader-tools button { min-height: 38px; }
+    .forest-reader-panel { inset-block-start: calc(100% - 9px); }
+    .forest-reader-panel button { min-height: 44px; }
+    body.forest-tavern-reading #sheld #chat .mes[is_user="true"] .mes_block { padding-inline-start: 10px; }
+    body.forest-tavern-reading #sheld #chat .mes_block .ch_name .forest-message-tools { width: 34px; min-height: 34px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.forest-tavern-reading #sheld::before, body.forest-tavern-reading #sheld #send_form { transition: none; }
+}

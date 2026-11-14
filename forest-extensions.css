@@ -1,0 +1,256 @@
+body:is(.forest-tavern-active, .forest-tavern-reading) #rm_extensions_block[data-forest-drawer],
+body:is(.forest-tavern-active, .forest-tavern-reading) dialog.popup:is(:has(.extensions_info), :has(#extension_branch_name)) {
+    --forest-settings-ink: #293731;
+    --forest-settings-soft: #53614c;
+    --forest-settings-accent: #3d533d;
+    --forest-settings-line: #64684746;
+    --forest-settings-field: #fff9e8bb;
+    --forest-settings-font: "Yuanti SC", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    --forest-settings-title: "Songti SC", "Noto Serif SC", "SimSun", serif;
+    --SmartThemeBodyColor: var(--forest-settings-ink);
+    --SmartThemeEmColor: var(--forest-settings-soft);
+    --SmartThemeQuoteColor: var(--forest-settings-accent);
+    --SmartThemeBorderColor: var(--forest-settings-line);
+    --SmartThemeBlurTintColor: #eee4ce;
+    color: var(--forest-settings-ink);
+    font: 15px/1.55 var(--forest-settings-font);
+    text-shadow: none;
+    color-scheme: light;
+    scrollbar-color: #8d9473 transparent;
+}
+
+#rm_extensions_block[data-forest-drawer] .extensions_block > div:first-child > h3 {
+    display: none;
+}
+
+#rm_extensions_block[data-forest-drawer] .extensions_block {
+    column-gap: 10px;
+    row-gap: 12px;
+}
+#rm_extensions_block[data-forest-drawer] .extensions_block > div:first-child {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+#rm_extensions_block[data-forest-drawer] label[for="extensions_notify_updates"] {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    gap: 8px;
+    padding: 0 2px 6px;
+    color: var(--forest-settings-soft);
+    font-size: 13px;
+}
+#rm_extensions_block[data-forest-drawer] .extensions_block > div:first-child > .menu_button {
+    justify-content: center;
+    width: auto;
+    margin: 0;
+}
+
+body:is(.forest-tavern-active, .forest-tavern-reading) :is(#rm_extensions_block[data-forest-drawer], dialog.popup:has(.extensions_info, #extension_branch_name))
+    :is(.menu_button:not(.displayNone), .forest-drawer-close) {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 34px;
+    border: 1px solid #7e8a6f63;
+    border-radius: 5px;
+    background: #e8e9d4cf;
+    color: var(--forest-settings-ink);
+    box-shadow: none;
+    text-shadow: none;
+    font-size: .9em;
+    line-height: 1.35;
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) :is(#rm_extensions_block[data-forest-drawer], dialog.popup:has(.extensions_info, #extension_branch_name))
+    :is(.menu_button, .forest-drawer-close):not(.disabled):hover { background: #dbe1c8; filter: none; }
+body:is(.forest-tavern-active, .forest-tavern-reading) :is(#rm_extensions_block[data-forest-drawer], dialog.popup:has(.extensions_info, #extension_branch_name))
+    :is(.menu_button, button, input, textarea, select):focus-visible { outline: 2px solid #637654; outline-offset: 2px; }
+body:is(.forest-tavern-active, .forest-tavern-reading) :is(#rm_extensions_block[data-forest-drawer], dialog.popup:has(.extensions_info, #extension_branch_name))
+    .menu_button > :not(.fa-solid) { font-size: inherit; }
+body:is(.forest-tavern-active, .forest-tavern-reading) :is(#rm_extensions_block[data-forest-drawer], dialog.popup:has(.extensions_info, #extension_branch_name))
+    :is(.menu_button, .forest-drawer-close):is(#extensions_details, .popup-button-ok) {
+    background: #3e5741;
+    color: #fff7e2;
+    border-color: transparent;
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) :is(#rm_extensions_block[data-forest-drawer], dialog.popup:has(.extensions_info, #extension_branch_name))
+    :is(#extensions_details, .popup-button-ok):not(.disabled):hover { background: #4a644a; }
+
+#rm_extensions_block[data-forest-drawer] #extensions_details,
+#rm_extensions_block[data-forest-drawer] #third_party_extension_button,
+#rm_extensions_block[data-forest-drawer] label[for="extensions_notify_updates"],
+body:is(.forest-tavern-active, .forest-tavern-reading) #rm_extensions_block[data-forest-drawer] .forest-drawer-heading .forest-drawer-close { min-height: 44px; }
+
+#rm_extensions_block[data-forest-drawer] :is(#extensions_settings, #extensions_settings2) {
+    flex: 0 0 100%;
+    width: 100%;
+    min-width: 0;
+    gap: 0;
+}
+#rm_extensions_block[data-forest-drawer] #extensions_settings2 { margin-top: -12px; }
+#rm_extensions_block[data-forest-drawer] :is(#extensions_settings, #extensions_settings2) .inline-drawer-toggle.inline-drawer-header {
+    min-height: 46px;
+    margin: 0;
+    padding: 10px 5px;
+    border: 0;
+    border-top: 1px solid var(--forest-settings-line);
+    border-radius: 0;
+    background: transparent;
+    color: var(--forest-settings-ink);
+    font-size: 15px;
+    line-height: 1.4;
+    text-align: start;
+    text-shadow: none;
+    box-shadow: none;
+    overflow-wrap: anywhere;
+}
+#rm_extensions_block[data-forest-drawer] :is(#extensions_settings, #extensions_settings2) .inline-drawer-toggle.inline-drawer-header:hover {
+    background: #53633d11;
+    filter: none;
+}
+#rm_extensions_block[data-forest-drawer] :is(#extensions_settings, #extensions_settings2) .inline-drawer-toggle :is(b, strong) { font-weight: 600; }
+#rm_extensions_block[data-forest-drawer] :is(#extensions_settings, #extensions_settings2) .inline-drawer-icon {
+    flex-shrink: 0;
+    color: var(--forest-settings-accent);
+    font-size: 14px;
+}
+#rm_extensions_block[data-forest-drawer] :is(#extensions_settings, #extensions_settings2) .inline-drawer-content {
+    padding: 8px 9px 10px;
+    border: 0;
+    border-left: 2px solid #687d5380;
+    border-radius: 0 4px 4px 0;
+    background: #6d785414;
+    overflow-wrap: anywhere;
+}
+#rm_extensions_block[data-forest-drawer] hr { border: 0; border-top: 1px solid var(--forest-settings-line); opacity: 1; }
+#rm_extensions_block[data-forest-drawer] :is(#extensions_status, label[for="extensions_autoconnect"]) { font-size: 13px; }
+#rm_extensions_block[data-forest-drawer] .extensions_block > div:has(> #extensions_url) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 7px;
+}
+#rm_extensions_block[data-forest-drawer] :is(#extensions_url, #extensions_api_key) { width: 100%; min-width: 0; min-height: 40px; margin: 0; }
+body:is(.forest-tavern-active, .forest-tavern-reading) #rm_extensions_block[data-forest-drawer] #extensions_connect {
+    min-width: 46px;
+    min-height: 40px;
+    justify-content: center;
+    margin: 0;
+    white-space: nowrap;
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) :is(#rm_extensions_block[data-forest-drawer], dialog.popup:has(.extensions_info, #extension_branch_name))
+    input:is([type="checkbox"], [type="range"]) { accent-color: #506b45; }
+body:is(.forest-tavern-active, .forest-tavern-reading) :is(#rm_extensions_block[data-forest-drawer], dialog.popup:has(.extensions_info, #extension_branch_name))
+    :is(.text_pole, select:not([multiple]), textarea) {
+    max-width: 100%;
+    border-color: var(--forest-settings-line);
+    border-radius: 5px;
+    background: var(--forest-settings-field);
+    color: var(--forest-settings-ink);
+    box-shadow: none;
+    text-shadow: none;
+    font: inherit;
+}
+
+body:is(.forest-tavern-active, .forest-tavern-reading) dialog.popup:is(:has(.extensions_info), :has(#extension_branch_name))[open] {
+    --forest-settings-gutter: clamp(15px, 4vw, 26px);
+    width: min(680px, calc(100dvw - 24px));
+    min-width: 0;
+    max-width: calc(100dvw - 24px) !important;
+    min-height: 0;
+    max-height: calc(100dvh - max(24px, env(safe-area-inset-top), env(safe-area-inset-bottom)));
+    padding: 13px var(--forest-settings-gutter) 16px;
+    border: 0;
+    border-radius: 0;
+    background: transparent url("./reading-paper-edge.webp") center / 100% 100% no-repeat;
+    box-shadow: none;
+    text-align: start;
+    filter: drop-shadow(0 12px 22px #17251c77);
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) dialog.popup:has(.extensions_info)[open] { height: min(730px, calc(100dvh - 32px)) !important; }
+body:is(.forest-tavern-active, .forest-tavern-reading) dialog.popup:is(:has(.extensions_info), :has(#extension_branch_name))[open]::backdrop {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: #18261c85;
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) dialog.popup:is(:has(.extensions_info), :has(#extension_branch_name)) .popup-body { min-height: 0; max-height: 100%; }
+body:is(.forest-tavern-active, .forest-tavern-reading) dialog.popup:is(:has(.extensions_info), :has(#extension_branch_name)) .popup-content {
+    min-height: 0;
+    padding: 0 3px;
+    overflow: auto;
+    overscroll-behavior: contain;
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) dialog.popup:is(:has(.extensions_info), :has(#extension_branch_name)) .popup-controls {
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px 8px;
+    align-self: stretch;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--forest-settings-line);
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) dialog.popup:is(:has(.extensions_info), :has(#extension_branch_name)) :is(.popup-controls, .extensions_toolbar) .menu_button {
+    justify-content: center;
+    min-height: 44px;
+    padding-inline: 11px;
+    white-space: normal;
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) dialog.popup:has(#extension_branch_name) :is(h3, p) { margin: 0; overflow-wrap: anywhere; }
+body:is(.forest-tavern-active, .forest-tavern-reading) dialog.popup:has(#extension_branch_name) .popup-inputs label span { color: var(--forest-settings-soft); opacity: 1; }
+body:is(.forest-tavern-active, .forest-tavern-reading) dialog.popup:is(:has(.extensions_info), :has(#extension_branch_name)) :is(h3, h4) { color: var(--forest-settings-ink); text-shadow: none; }
+body:is(.forest-tavern-active, .forest-tavern-reading) dialog.popup:has(#extension_branch_name) h3 { font-family: var(--forest-settings-title); font-size: 1.45em; }
+
+body:is(.forest-tavern-active, .forest-tavern-reading) .extensions_info .extensions_toolbar {
+    flex-wrap: wrap;
+    padding: 5px 0 9px;
+    border-bottom: 1px solid var(--forest-settings-line);
+    background: #f1e8d1;
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) .extensions_info h3 {
+    font: 700 19px/1.4 var(--forest-settings-title);
+    text-wrap: pretty;
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) .extensions_info .extension_block {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    align-items: center;
+    min-height: 45px;
+    gap: 9px;
+    margin: 0;
+    padding: 6px 0;
+    border: 0;
+    border-top: 1px solid var(--forest-settings-line);
+    border-radius: 0;
+    background: transparent;
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) .extensions_info :is(.extension_toggle, .extension_icon) { color: var(--forest-settings-accent); }
+body:is(.forest-tavern-active, .forest-tavern-reading) .extensions_info .extension_toggle input { width: 21px; height: 21px; margin: 2px; }
+body:is(.forest-tavern-active, .forest-tavern-reading) .extensions_info .extension_text_block { min-width: 0; white-space: normal; overflow: visible; overflow-wrap: anywhere; }
+body:is(.forest-tavern-active, .forest-tavern-reading) .extensions_info .extension_name { font-size: 15px; font-weight: 650; }
+body:is(.forest-tavern-active, .forest-tavern-reading) .extensions_info :is(.extension_disabled, .extension_missing, .extension_author, .extension_version) {
+    color: var(--forest-settings-soft);
+    opacity: 1;
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) .extensions_info :is(.extension_author, .extension_version):not(:empty) { margin-inline-start: 6px; }
+body:is(.forest-tavern-active, .forest-tavern-reading) .extensions_info .extension_modules .optional { color: var(--forest-settings-soft); }
+body:is(.forest-tavern-active, .forest-tavern-reading) .extensions_info .extension_modules .failure { color: #81472e; }
+body:is(.forest-tavern-active, .forest-tavern-reading) .extensions_info .extension_name.update_available { color: #435e37; }
+body:is(.forest-tavern-active, .forest-tavern-reading) .extensions_info .extension_actions { gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+body:is(.forest-tavern-active, .forest-tavern-reading) .extensions_info .extension_actions .menu_button { justify-content: center; min-width: 33px; margin: 0; }
+
+@media (max-width: 600px) {
+    #rm_extensions_block[data-forest-drawer] .extensions_block > div:has(> #extensions_url) {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+    #rm_extensions_block[data-forest-drawer] :is(#extensions_url, #extensions_api_key) { grid-column: 1; }
+    #rm_extensions_block[data-forest-drawer] .extensions_url_block { grid-column: 2; grid-row: 1 / span 2; }
+    body:is(.forest-tavern-active, .forest-tavern-reading) #rm_extensions_block[data-forest-drawer] :is(.text_pole, select, textarea),
+    body:is(.forest-tavern-active, .forest-tavern-reading) dialog.popup:has(#extension_branch_name) :is(.text_pole, textarea) { font-size: 16px; }
+    body:is(.forest-tavern-active, .forest-tavern-reading) .extensions_info .extensions_toolbar .expander { display: none; }
+    body:is(.forest-tavern-active, .forest-tavern-reading) .extensions_info .extension_block { gap: 7px; }
+    body:is(.forest-tavern-active, .forest-tavern-reading) .extensions_info .extension_block:has(.extension_actions > :not(.displayNone)) .extension_text_block { grid-column: 3 / -1; }
+    body:is(.forest-tavern-active, .forest-tavern-reading) .extensions_info .extension_actions:not(:empty) { grid-column: 3 / -1; justify-content: flex-start; }
+    body:is(.forest-tavern-active, .forest-tavern-reading) .extensions_info .extension_actions .menu_button { min-height: 39px; min-width: 39px; }
+    body:is(.forest-tavern-active, .forest-tavern-reading) .extensions_info :is(.extension_author, .extension_version) { font-size: 12px; }
+}

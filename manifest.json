@@ -1,0 +1,11 @@
+{
+    "display_name": "林间拾叶",
+    "loading_order": 90,
+    "requires": [],
+    "optional": [],
+    "js": "index.js",
+    "css": "style.css",
+    "author": "lanjiu",
+    "version": "1.4.0",
+    "scenic_theme": { "id": "forest", "label": "林间拾叶", "order": 10 }
+}

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>林间拾叶 · 大树与溪边</title>
+<link rel="stylesheet" href="forest-scene.css?v=1.3.1">
+</head>
+<body>
+<div class="scene" data-place="oak" data-weather="breeze">
+  <div class="view" tabindex="0" aria-label="森林场景，可左右拖动或用方向键看景">
+    <div class="camera">
+      <video class="forest forest-layer oak" poster="oak-path.jpg" aria-hidden="true" muted loop playsinline preload="none"></video>
+      <video class="forest forest-layer creek" poster="creek-path.jpg" aria-hidden="true" muted loop playsinline preload="none" hidden></video>
+      <video class="forest forest-layer lake" data-poster="lake-path.jpg" aria-hidden="true" muted loop playsinline preload="none" hidden></video>
+      <video class="forest forest-layer falls" data-poster="falls-path.jpg?v=1.3.1" aria-hidden="true" muted loop playsinline preload="none" hidden></video>
+      <div class="weather-air forest-layer" aria-hidden="true"></div>
+      <canvas class="botany forest-layer" aria-hidden="true"></canvas>
+      <canvas class="weather-drops forest-layer" aria-hidden="true"></canvas>
+      <section class="plants forest-layer" aria-label="树下的花草"></section>
+    </div>
+    <div class="scene-veil" aria-hidden="true"></div>
+    <button class="plant-nameplate" type="button" hidden></button>
+  </div>
+</div>
+<aside class="side" id="side" aria-label="天气与声音" hidden><div class="side-title"><strong>天气与声音</strong><button type="button" data-close-weather aria-label="关闭天气">×</button></div><div id="panel"></div></aside>
+<section id="catalog" class="catalog" aria-label="植物图鉴" hidden>
+<header><h1>植物图鉴</h1><button class="close-catalog" type="button" aria-label="关闭图鉴">×</button></header>
+<p class="catalog-count"></p>
+<input class="catalog-search" type="search" aria-label="搜索角色或植物" placeholder="搜索角色或植物">
+<p class="catalog-guide">拖动「种下」或「移栽」，也可以点一下再选位置。</p>
+<ul class="catalog-entries" aria-label="已收录角色"></ul>
+<details class="catalog-colophon">
+<summary>图鉴封底</summary>
+<label class="forest-start-setting">进入森林时
+<select class="forest-start-scene">
+<option value="oak">大树下</option>
+<option value="creek">小溪边</option>
+<option value="lake">静湖</option>
+<option value="falls">瀑布</option>
+</select>
+</label>
+<div class="theme-switches" aria-label="切换主题" hidden></div>
+<output class="colophon-status" aria-live="polite"></output>
+</details>
+</section>
+<nav class="field-station" aria-label="林间物件">
+<button class="field-prop book" type="button" data-field="catalog">图鉴</button>
+<button class="field-prop lantern" type="button" data-drawer="sys-settings-button">连接</button>
+<button class="field-prop stone" type="button" data-field="weather">天气</button>
+<button class="field-prop" type="button" data-field="signs" aria-expanded="false">木牌</button>
+
+<div class="field-signs" hidden>
+<button type="button" data-drawer="ai-config-button">生成设置</button>
+<button type="button" data-drawer="user-settings-button">用户设置</button>
+<button type="button" data-drawer="WI-SP-button">世界书</button>
+<button type="button" data-drawer="advanced-formatting-button">高级格式</button>
+<button type="button" data-drawer="rightNavHolder">角色管理</button>
+<button type="button" data-drawer="persona-management-button">我的人设</button>
+<button type="button" data-drawer="extensions-settings-button">扩展</button>
+<button type="button" data-drawer="backgrounds-button">背景</button>
+</div>
+</nav>
+<p class="pan-hint" aria-hidden="true">左右滑动看风景</p>
+<p class="forest-status" role="status" hidden></p>
+<dialog class="cultivar" aria-labelledby="cultivar-title">
+  <header>
+    <div><h2 id="cultivar-title">换植物</h2><p class="cultivar-role"></p></div>
+    <button type="button" class="close-cultivar" aria-label="关闭品种选择" autofocus>×</button>
+  </header>
+  <input class="cultivar-search" type="search" aria-label="搜索已解锁品种" placeholder="搜索已解锁品种">
+  <div class="cultivar-choices" aria-label="已解锁品种"></div>
+  <p class="cultivar-tip">不同的角色可以选同一种植物。</p>
+</dialog>
+<div class="garden-tool" hidden>
+  <p class="garden-instruction" aria-live="polite"></p>
+  <select class="garden-scene" aria-label="选择种植场景">
+    <option value="oak">大树下</option><option value="creek">小溪边</option>
+    <option value="lake">静湖</option><option value="falls">瀑布</option>
+  </select>
+  <button class="garden-cancel" type="button">取消</button>
+</div>
+<img class="plant-ghost" aria-hidden="true" alt="" draggable="false" hidden>
+<script src="forest-camera.js?v=1.3.1" defer></script>
+<script src="plant-atlas/wind.js?v=1.2.1" defer></script>
+<script src="forest-botany.js?v=1.2.2" defer></script>
+<script src="forest-rain.js?v=1.2.1" defer></script>
+<script src="forest-weather.js?v=1.3.0" defer></script>
+<script src="forest-ui.js?v=1.4.0" defer></script>
+</body>
+</html>

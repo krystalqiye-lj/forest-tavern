@@ -1,0 +1,280 @@
+body:is(.forest-tavern-active, .forest-tavern-reading) {
+    --forest-settings-ink: #302e24;
+    --forest-settings-soft: #5b543f;
+    --forest-settings-accent: #3e5039;
+    --forest-settings-line: #80704b55;
+    --forest-settings-field: #fcf5e3;
+    --forest-settings-tint: #ede1c5;
+    --forest-settings-font: "Yuanti SC", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    --forest-settings-title: "Songti SC", "Noto Serif CJK SC", "SimSun", serif;
+    --forest-settings-paper: url("./reading-paper-edge.webp");
+}
+
+body:is(.forest-tavern-active, .forest-tavern-reading) #top-settings-holder [data-forest-drawer].openDrawer {
+    --SmartThemeBodyColor: var(--forest-settings-ink);
+    --SmartThemeEmColor: var(--forest-settings-soft);
+    --SmartThemeUnderlineColor: var(--forest-settings-accent);
+    --SmartThemeQuoteColor: var(--forest-settings-accent);
+    --SmartThemeBorderColor: var(--forest-settings-line);
+    --SmartThemeBlurTintColor: var(--forest-settings-tint);
+    --SmartThemeInputColor: var(--forest-settings-field);
+    --SmartThemeShadowColor: transparent;
+    --black50a: #69543516;
+    --black30a: #69543512;
+    --white30a: #fff8e438;
+    --grey30a: #b6a67e31;
+    --mainFontSize: 15px;
+    --mainFontFamily: var(--forest-settings-font);
+    --forest-drawer-width: 690px;
+    --forest-drawer-space: max(14px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+    --forest-drawer-top: max(12px, env(safe-area-inset-top, 0px));
+    --forest-drawer-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+    box-sizing: border-box;
+    position: fixed !important;
+    inset: var(--forest-drawer-top) var(--forest-drawer-space) auto auto !important;
+    width: min(var(--forest-drawer-width), calc(100dvw - 2 * var(--forest-drawer-space))) !important;
+    max-width: calc(100dvw - 2 * var(--forest-drawer-space)) !important;
+    max-height: calc(100dvh - var(--forest-drawer-top) - var(--forest-drawer-bottom)) !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: auto;
+    margin: 0 !important;
+    padding: 13px clamp(15px, 2.5vw, 26px) 22px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    visibility: visible;
+    pointer-events: auto;
+    color: var(--forest-settings-ink);
+    font: 15px/1.55 var(--forest-settings-font);
+    text-shadow: none;
+    color-scheme: light;
+    background: transparent var(--forest-settings-paper) center / 100% 100% no-repeat;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    filter: drop-shadow(0 10px 18px #18251b78);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    animation: none;
+    transition: none;
+    scrollbar-color: #a58e63 transparent;
+}
+
+body:is(.forest-tavern-active, .forest-tavern-reading) #top-settings-holder :is(#user-settings-block, #AdvancedFormatting, #WorldInfo)[data-forest-drawer].openDrawer {
+    --forest-drawer-width: 880px;
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) #top-settings-holder :is(#left-nav-panel, #right-nav-panel, #rm_api_block, #rm_extensions_block)[data-forest-drawer].openDrawer {
+    --forest-drawer-width: 555px;
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) #top-settings-holder :is(.fillLeft, .fillRight, .bg-drawer-layout)[data-forest-drawer].openDrawer {
+    display: block;
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) #top-settings-holder :is(#left-nav-panel, #right-nav-panel)[data-forest-drawer] .scrollableInner {
+    height: auto;
+    padding-inline: 0;
+}
+
+[data-forest-drawer] > .qinghe-panel-heading,
+[data-forest-drawer] :is(
+    #title_api,
+    [name="userSettingsRowOne"] h3 > span,
+    #bg-header-fixed h3,
+    h3 > [data-i18n="Advanced Formatting"],
+    h3 > [data-i18n="Worlds/Lorebooks"],
+    h3[data-i18n="Persona Management"],
+    h3 > [data-i18n="Persona Management"]
+) { display: none; }
+
+.forest-drawer-heading {
+    position: sticky;
+    z-index: 4;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin: 0 0 13px;
+    padding: 4px 1px 9px;
+    border-bottom: 1px solid var(--forest-settings-line);
+    background: #f0e5cbd9 url("./reading-paper.jpg") center / cover;
+    background-blend-mode: soft-light;
+}
+.forest-drawer-heading h2 {
+    margin: 0;
+    color: var(--forest-settings-ink);
+    font: 700 clamp(24px, 5vw, 29px)/1.2 var(--forest-settings-title);
+    letter-spacing: .07em;
+}
+.forest-drawer-heading .forest-drawer-close {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 4px 11px;
+    border: 1px solid var(--forest-settings-line);
+    border-radius: 5px;
+    background: var(--forest-settings-field);
+    color: var(--forest-settings-ink);
+    font: 600 13px/1.2 var(--forest-settings-font);
+    white-space: nowrap;
+    cursor: pointer;
+}
+.forest-drawer-heading .forest-drawer-close:hover { background: var(--forest-settings-tint); }
+.forest-drawer-close > span { font: 22px/1 Georgia, serif; }
+
+body:is(.forest-tavern-active, .forest-tavern-reading) [data-forest-drawer] :is(h3, h4, .standoutHeader, .range-block-title) {
+    color: var(--forest-settings-ink);
+    text-shadow: none;
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) [data-forest-drawer] :is(h4, .standoutHeader, .inline-drawer-toggle.inline-drawer-header),
+body:is(.forest-tavern-active, .forest-tavern-reading) #user-settings-block[data-forest-drawer] h4 {
+    margin-block: 6px;
+    padding: 7px 4px;
+    border: 0;
+    border-bottom: 1px solid var(--forest-settings-line);
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    text-shadow: none;
+    font-weight: 650;
+    overflow-wrap: anywhere;
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) [data-forest-drawer] :is(.standoutHeader, .inline-drawer-header):hover {
+    background: #90784912;
+    filter: none;
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) [data-forest-drawer] :is([name="themeElements"], #main-API-selector-block, #wiTopBlock, #CharListButtonAndHotSwaps, #persona-management-block, .settingsSectionWrap, .inline-drawer-content) {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) [data-forest-drawer] .inline-drawer-content {
+    padding: 8px 9px;
+    border-inline-start: 1px solid var(--forest-settings-line);
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) [data-forest-drawer] :is(.range-block, #bg-header-fixed, .ch_overview, .character_select, .world_entry, .avatar-container) {
+    min-width: 0;
+    border-color: var(--forest-settings-line);
+    box-shadow: none;
+    text-shadow: none;
+}
+[data-forest-drawer] .range-block,
+[data-forest-drawer] :is(.character_select, .avatar-container, .world_entry) {
+    background: #f2e7cd59;
+    border-radius: 4px;
+}
+[data-forest-drawer] .bg-header-row-1 { flex-wrap: wrap; }
+[data-forest-drawer] #bg-header-fixed { background: transparent; }
+[data-forest-drawer] #bg_tabs .bg_tabs_list .bg_tab_button {
+    border-color: var(--forest-settings-line);
+    border-radius: 4px 4px 0 0;
+    background: var(--forest-settings-field);
+}
+[data-forest-drawer] #bg_tabs .bg_tabs_list .bg_tab_button.ui-tabs-active {
+    background: var(--forest-settings-tint);
+    color: var(--forest-settings-ink);
+}
+
+body:is(.forest-tavern-active, .forest-tavern-reading) [data-forest-drawer] :is(button.menu_button, .menu_button, .right_menu_button:not(.drawer-icon), .paginationjs-page > a) {
+    border: 1px solid var(--forest-settings-line);
+    border-radius: 5px;
+    background: var(--forest-settings-field);
+    color: var(--forest-settings-ink);
+    box-shadow: none;
+    text-shadow: none;
+    line-height: 1.3;
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) [data-forest-drawer] :is(.menu_button, .right_menu_button):not(.disabled):hover {
+    background: var(--forest-settings-tint);
+    filter: none;
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) [data-forest-drawer] :is(.redWarningBG, .red_button):is(.menu_button, .right_menu_button) {
+    color: #773b2e;
+    border-color: #a0664e70;
+}
+body:is(.forest-tavern-active, .forest-tavern-reading) [data-forest-drawer] :is(
+    input:not([type]), input:is([type="text"], [type="number"], [type="search"], [type="email"], [type="url"], [type="password"]), textarea, select, .select2-selection
+) {
+    box-sizing: border-box;
+    min-width: 0;
+    max-width: 100%;
+    border: 1px solid var(--forest-settings-line);
+    border-radius: 5px;
+    background: var(--forest-settings-field);
+    color: var(--forest-settings-ink);
+    box-shadow: none;
+    text-shadow: none;
+    font-size: inherit;
+}
+[data-forest-drawer] :is(input, textarea)::placeholder { color: #6c6250; }
+[data-forest-drawer] :is(.menu_button, button, input, textarea, select):focus-visible { outline: 2px solid #69775a; outline-offset: 2px; }
+[data-forest-drawer] :is(input[type="checkbox"], input[type="radio"], input[type="range"]) { accent-color: #566a49; }
+body:is(.forest-tavern-active, .forest-tavern-reading) [data-forest-drawer] .neo-range-slider { background: #b6a47a !important; box-shadow: none !important; filter: none; }
+[data-forest-drawer] hr { border: 0; border-top: 1px solid var(--forest-settings-line); opacity: 1; }
+[data-forest-drawer] [data-qinghe-label]::after { content: none; }
+[data-forest-drawer] :is(#user-settings-block-content, #persona-management-block) > div { min-width: 0; }
+[data-forest-drawer] #user-settings-block-content > div { flex: 1 1 245px; }
+[data-forest-drawer] #persona-management-block { padding-inline: 0; }
+[data-forest-drawer] :is(#UI-presets-block, #wiTopBlock, #CharListButtonAndHotSwaps) { gap: 8px; }
+[data-forest-drawer] #UI-presets-block h4 { display: flex; flex-wrap: wrap; gap: 5px; }
+[data-forest-drawer] #UI-presets-block > .flex-container > select { flex: 1 1 8rem; }
+[data-forest-drawer] #user-settings-block-content [name="themeElements"] { padding: 0; }
+[data-forest-drawer] :is(#UI-language-block, #settingsSearch, #persona_search_bar, #bg-filter, #world_info_search) { min-width: 0; }
+[data-forest-drawer] .select2-container { min-width: 0; max-width: 100%; }
+
+body[data-forest-drawer-open] .select2-container--open .select2-dropdown {
+    background: var(--forest-settings-field);
+    border-color: var(--forest-settings-line);
+    color: var(--forest-settings-ink);
+}
+body[data-forest-drawer-open] .select2-results__option--highlighted[aria-selected] {
+    background: #46563c;
+    color: #fff7e4;
+}
+
+body[data-forest-drawer-open] :is(dialog.popup, #character_popup.open, #dialogue_popup) {
+    --SmartThemeBodyColor: var(--forest-settings-ink);
+    --SmartThemeBlurTintColor: var(--forest-settings-tint);
+    --SmartThemeBorderColor: var(--forest-settings-line);
+    box-sizing: border-box;
+    min-width: 0;
+    max-width: calc(100dvw - 22px) !important;
+    padding: 13px 17px 17px;
+    border: 0;
+    border-radius: 0;
+    background: transparent var(--forest-settings-paper) center / 100% 100% no-repeat;
+    color: var(--forest-settings-ink);
+    font: 15px/1.5 var(--forest-settings-font);
+    box-shadow: none;
+    filter: drop-shadow(0 10px 18px #18251b78);
+}
+body[data-forest-drawer-open] dialog.popup::backdrop { background: #202d2278; backdrop-filter: none; }
+body[data-forest-drawer-open] :is(dialog.popup, #character_popup.open, #dialogue_popup) :is(input.text_pole, textarea, select, .menu_button) {
+    border-color: var(--forest-settings-line);
+    border-radius: 5px;
+    background: var(--forest-settings-field);
+    color: var(--forest-settings-ink);
+    text-shadow: none;
+    box-shadow: none;
+}
+body[data-forest-drawer-open] dialog.popup .popup-content { min-height: 0; overflow-wrap: anywhere; }
+body[data-forest-drawer-open] dialog.popup .popup-controls { flex: 0 0 auto; flex-wrap: wrap; gap: 6px; }
+
+@media (max-width: 660px) {
+    body:is(.forest-tavern-active, .forest-tavern-reading) #top-settings-holder [data-forest-drawer].openDrawer {
+        --forest-drawer-space: max(7px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+        --forest-drawer-top: max(7px, env(safe-area-inset-top, 0px));
+        --forest-drawer-bottom: max(7px, env(safe-area-inset-bottom, 0px));
+        padding: 10px 14px 20px;
+    }
+    [data-forest-drawer] :is(#user-settings-block-content, #persona-management-block, #wiTopBlock, #wiActivationSettings),
+    #AdvancedFormatting[data-forest-drawer] > .spaceEvenly { flex-wrap: wrap; }
+    [data-forest-drawer] :is(#user-settings-block-content, #persona-management-block, #wiTopBlock, #wiActivationSettings) > div,
+    #AdvancedFormatting[data-forest-drawer] > .spaceEvenly > div { flex: 1 1 100%; min-width: 0; }
+    [data-forest-drawer] :is([name="UserSettingsRowTwo"], .bg-header-row-1, #world_popup > .flex-container) { flex-wrap: wrap; }
+    [data-forest-drawer] #settingsSearch { flex-basis: 100%; }
+    [data-forest-drawer] :is(select, textarea, input:is([type="text"], [type="search"], [type="url"], [type="password"])) { font-size: 16px; }
+    [data-forest-drawer] :is(select, .inline-drawer-toggle.inline-drawer-header, .menu_button:has(span), [type="search"]) { min-height: 41px; }
+}
