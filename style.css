@@ -1,6 +1,6 @@
-@import url("./forest-drawers.css?v=1.3.0");
-@import url("./forest-extensions.css?v=1.3.0");
-@import url("./forest-reader.css?v=1.3.1");
+@import url("./forest-drawers.css?v=1.4.1");
+@import url("./forest-extensions.css?v=1.4.1");
+@import url("./forest-reader.css?v=1.4.1");
 
 #forest-tavern-frame {
     position: fixed;
@@ -75,7 +75,7 @@ body.forest-tavern-reading #sheld::before {
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    background: url("./reading-paper-edge.webp") center / 100% 100% no-repeat;
+    background: var(--forest-panel-paper, linear-gradient(110deg, #fbf1da, #efe3c7)) center / 100% 100% no-repeat;
 }
 
 body.forest-tavern-reading #sheld.qinghe-wide-reader {
@@ -249,7 +249,7 @@ body.forest-tavern-reading #sheld.qinghe-wide-reader {
     margin: auto;
     overflow: visible;
     color: #394831;
-    background: transparent url("./reading-paper-edge.webp") center / 100% 100% no-repeat;
+    background: var(--forest-panel-paper, linear-gradient(110deg, #f7efd8, #eee1c2)) center / 100% 100% no-repeat;
     border: 0;
     filter: drop-shadow(0 8px 13px #17251c85);
 }
@@ -295,7 +295,7 @@ body.forest-tavern-reading #sheld.qinghe-wide-reader {
     width: 154px;
     padding: 10px;
     color: var(--forest-moss);
-    background: transparent url("./reading-paper-edge.webp") center / 100% 100% no-repeat;
+    background: var(--forest-panel-paper, linear-gradient(110deg, #f7efd8, #eee1c2)) center / 100% 100% no-repeat;
     border: 0;
     filter: drop-shadow(0 8px 13px #17251c85);
 }

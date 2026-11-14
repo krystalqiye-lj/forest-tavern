@@ -4,16 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>林间拾叶 · 大树与溪边</title>
-<link rel="stylesheet" href="forest-scene.css?v=1.3.1">
+<link rel="stylesheet" href="forest-scene.css?v=1.4.1">
 </head>
 <body>
 <div class="scene" data-place="oak" data-weather="breeze">
   <div class="view" tabindex="0" aria-label="森林场景，可左右拖动或用方向键看景">
     <div class="camera">
-      <video class="forest forest-layer oak" poster="oak-path.jpg" aria-hidden="true" muted loop playsinline preload="none"></video>
-      <video class="forest forest-layer creek" poster="creek-path.jpg" aria-hidden="true" muted loop playsinline preload="none" hidden></video>
-      <video class="forest forest-layer lake" data-poster="lake-path.jpg" aria-hidden="true" muted loop playsinline preload="none" hidden></video>
-      <video class="forest forest-layer falls" data-poster="falls-path.jpg?v=1.3.1" aria-hidden="true" muted loop playsinline preload="none" hidden></video>
+      <img class="forest forest-layer scene-still" src="oak-path.jpg" alt="" aria-hidden="true" draggable="false">
+      <video class="forest forest-layer scene-clip" aria-hidden="true" muted loop playsinline preload="none"></video>
       <div class="weather-air forest-layer" aria-hidden="true"></div>
       <canvas class="botany forest-layer" aria-hidden="true"></canvas>
       <canvas class="weather-drops forest-layer" aria-hidden="true"></canvas>
@@ -81,11 +79,12 @@
   <button class="garden-cancel" type="button">取消</button>
 </div>
 <img class="plant-ghost" aria-hidden="true" alt="" draggable="false" hidden>
-<script src="forest-camera.js?v=1.3.1" defer></script>
+<script src="forest-media.js?v=1.4.1" defer></script>
+<script src="forest-camera.js?v=1.4.1" defer></script>
 <script src="plant-atlas/wind.js?v=1.2.1" defer></script>
-<script src="forest-botany.js?v=1.2.2" defer></script>
+<script src="forest-botany.js?v=1.4.1" defer></script>
 <script src="forest-rain.js?v=1.2.1" defer></script>
-<script src="forest-weather.js?v=1.3.0" defer></script>
-<script src="forest-ui.js?v=1.4.0" defer></script>
+<script src="forest-weather.js?v=1.4.1" defer></script>
+<script src="forest-ui.js?v=1.4.1" defer></script>
 </body>
 </html>

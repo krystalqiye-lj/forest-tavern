@@ -53,6 +53,7 @@ export async function loadGarden() {
         return [plant.id, {
             ...plant,
             src: new URL('art/specimens/' + plant.file, plantList).href,
+            thumbnail: new URL('art/thumbnails/' + plant.file.replace(/\.webp$/, '.png'), plantList).href,
             model: model && {
                 ...model,
                 src: new URL('art/natural/' + model.file + '?v=1.2.1', naturalList).href,

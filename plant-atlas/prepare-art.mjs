@@ -1,5 +1,5 @@
 import { createRequire } from 'node:module';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { featuredIds, habits, sheets } from './catalog.mjs';
@@ -8,6 +8,7 @@ const require = createRequire(import.meta.url);
 const sharp = require(process.env.FOREST_SHARP || 'sharp');
 const folder = dirname(fileURLToPath(import.meta.url));
 const destination = resolve(folder, 'art/specimens');
+const thumbnails = resolve(folder, 'art/thumbnails');
 const clamp = (x, low, high) => Math.max(low, Math.min(high, x));
 
 // Follow the transparent gap when long foliage reaches over a straight tile boundary.
@@ -156,6 +157,7 @@ function dimensions(data, width, height) {
 }
 
 await mkdir(destination, { recursive: true });
+await mkdir(thumbnails, { recursive: true });
 const catalog = [];
 for (const sheet of sheets) {
     const legacy = sheet.file.endsWith('.jpg');
@@ -192,7 +194,10 @@ for (const sheet of sheets) {
                 .extract({left:box.left, top:box.top, width:cropWidth, height:cropHeight})
                 .resize({width:430, height:430, fit:'inside', withoutEnlargement:true})
                 .webp({quality:91, alphaQuality:100, effort:5}).toFile(resolve(destination, file));
-            const saved = await sharp(await readFile(resolve(destination, file))).metadata();
+            const artwork = sharp(resolve(destination, file));
+            await artwork.clone().resize({ width: 160, height: 160, fit: 'inside' })
+                .png().toFile(resolve(thumbnails, file.replace(/\.webp$/, '.png')));
+            const saved = await artwork.metadata();
             catalog.push({
                 id, name, category, file, original: id <= 40,
                 width: saved.width, height: saved.height,

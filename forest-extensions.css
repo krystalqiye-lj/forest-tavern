@@ -162,7 +162,7 @@ body:is(.forest-tavern-active, .forest-tavern-reading) dialog.popup:is(:has(.ext
     padding: 13px var(--forest-settings-gutter) 16px;
     border: 0;
     border-radius: 0;
-    background: transparent url("./reading-paper-edge.webp") center / 100% 100% no-repeat;
+    background: var(--forest-panel-paper, linear-gradient(110deg, #f7efd8, #eee1c2)) center / 100% 100% no-repeat;
     box-shadow: none;
     text-align: start;
     filter: drop-shadow(0 12px 22px #17251c77);

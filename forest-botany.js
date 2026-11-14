@@ -100,12 +100,15 @@
             entry = { img, model };
             img.decoding = 'async';
             img.onload = invalidate;
-            img.onerror = () => {
-                img.onerror = null;
-                entry.model = plant;
-                img.src = plant.src;
+            const sources = [...new Set([model.src, plant.src, plant.thumbnail].filter(Boolean))];
+            const source = () => {
+                const url = sources.shift();
+                if (!url) return;
+                entry.model = url === model.src ? model : plant;
+                img.src = url;
             };
-            img.src = model.src;
+            img.onerror = source;
+            source();
             pictures.set(plant.id, entry);
             return entry;
         }

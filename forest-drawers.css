@@ -7,7 +7,7 @@ body:is(.forest-tavern-active, .forest-tavern-reading) {
     --forest-settings-tint: #ede1c5;
     --forest-settings-font: "Yuanti SC", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
     --forest-settings-title: "Songti SC", "Noto Serif CJK SC", "SimSun", serif;
-    --forest-settings-paper: url("./reading-paper-edge.webp");
+    --forest-settings-paper: var(--forest-panel-paper, linear-gradient(110deg, #f7efd8, #eee1c2));
 }
 
 body:is(.forest-tavern-active, .forest-tavern-reading) #top-settings-holder [data-forest-drawer].openDrawer {

@@ -22,16 +22,22 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
     position: absolute;
     left: 50%;
     top: 55%;
+    width: max(100vw, 150vh);
+    height: max(100vh, 66.666667vw);
     width: max(100vw, 150dvh);
     height: max(100dvh, 66.666667vw);
     transform: translate(-50%, -55%);
     pointer-events: none;
 }
 .scene:is([data-place="lake"], [data-place="falls"]) .forest-layer {
+    width: max(100vw, 177.7778vh);
+    height: max(100vh, 56.25vw);
     width: max(100vw, 177.7778dvh);
     height: max(100dvh, 56.25vw);
 }
 .forest { display: block; object-fit: fill; }
+.scene-clip { opacity: 0; }
+.scene-clip.is-playing { opacity: 1; }
 .weather-air { opacity: 0; transition: opacity .65s ease; }
 .botany { z-index: 1; }
 .weather-drops { z-index: 2; }
@@ -220,7 +226,7 @@ body.forest-book-backdrop::after {
 
 .catalog, .side, .cultivar, .forest-status, .garden-tool {
     color: var(--ink);
-    background: transparent url("reading-paper-edge.webp") center / 100% 100% no-repeat;
+    background: var(--forest-panel-paper, linear-gradient(110deg, #f7efd8, #eee1c2)) center / 100% 100% no-repeat;
     border: 0;
     border-radius: 0;
     filter: drop-shadow(0 8px 13px #17251c85);

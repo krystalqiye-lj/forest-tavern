@@ -1,18 +1,22 @@
 import { characters, default_avatar, isGenerating, selectCharacterById, this_chid } from '../../../../script.js';
 import { eventSource, event_types } from '../../../events.js';
 import { openWelcomeScreen } from '../../../welcome-screen.js';
-import { loadGarden } from './garden.js?v=1.2.1';
+import { loadGarden } from './garden.js?v=1.4.1';
 import { activeTheme, availableThemes, switchTheme } from './theme-choice.js?v=1';
 import { installForestMessageTools, installForestReader } from './forest-reader.js?v=1.3.0';
 import { installForestChatWidgets } from './forest-chat-widgets.js?v=1.3.1';
 
-const sourceUrl = new URL('./forest.html?v=1.4.0', import.meta.url);
+const sourceUrl = new URL('./forest.html?v=1.4.1', import.meta.url);
 const $ = id => document.getElementById(id);
 
 function installForest() {
     const toolbar = $('top-settings-holder');
     const chat = $('sheld');
     if (!toolbar || !chat || $('forest-tavern-frame')) return;
+
+    const paper = new Image();
+    paper.onload = () => document.documentElement.style.setProperty('--forest-panel-paper', `url("${paper.src}")`);
+    paper.src = new URL('./reading-paper-edge.png', import.meta.url).href;
 
     const drawers = new Map([
         ['ai-config-button', '生成设置'], ['sys-settings-button', 'API 连接'],
@@ -75,6 +79,7 @@ function installForest() {
     frame.title = '林间拾叶';
     frame.hidden = true;
     frame.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+    frame.setAttribute('allow', 'autoplay');
     document.body.append(frame);
 
     const bookHead = document.createElement('header');
@@ -298,7 +303,13 @@ function installForest() {
             return;
         }
         for (const image of bookHead.querySelectorAll('.forest-book-plant')) {
-            if (image.getAttribute('src') !== plant.src) image.src = plant.src;
+            if (image.dataset.plant === plant.src) continue;
+            image.dataset.plant = plant.src;
+            image.onerror = () => {
+                image.onerror = null;
+                image.src = plant.thumbnail;
+            };
+            image.src = plant.src;
         }
         bookmark.setAttribute('aria-label', `查看植物书签 ${plant.name}`);
         plantNote.querySelector('strong').textContent = plant.name;
@@ -398,7 +409,11 @@ function installForest() {
             openDrawer(message.id);
             return;
         }
-        if (message?.forestTavern !== 'character' || opening) return;
+        if (message?.forestTavern !== 'character') return;
+        if (opening) {
+            send('failed', { text: '正在打开角色，请稍等。' });
+            return;
+        }
         if (message.via !== 'catalog' && !(message.via === 'plant' && garden?.isPlanted(message.id))) {
             send('failed');
             return;

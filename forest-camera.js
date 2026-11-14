@@ -32,7 +32,7 @@
         }
 
         function move(target, duration) {
-            const animate = duration > 0 && !reduced.matches;
+            const animate = duration > 0 && !reduced.matches && typeof camera.animate === 'function';
             const current = animate ? getComputedStyle(camera).transform : '';
             animation?.cancel();
             camera.style.transform = target;
@@ -41,7 +41,7 @@
                 duration, easing: 'cubic-bezier(.32,.12,.22,1)',
             });
             animation = pending;
-            return pending.finished.catch(() => {});
+            return pending.finished?.catch(() => {}) ?? Promise.resolve();
         }
 
         function reset(duration = 0) {
@@ -85,9 +85,9 @@
             const dx = event.clientX - gesture.startX;
             const dy = event.clientY - gesture.startY;
             if (!gesture.panning) {
-                if (Math.abs(dx) < 9 || Math.abs(dx) < Math.abs(dy) * 1.12) return;
+                if (Math.abs(dx) < (event.pointerType === 'touch' ? 14 : 9) || Math.abs(dx) < Math.abs(dy) * 1.12) return;
                 gesture.panning = true;
-                view.setPointerCapture(event.pointerId);
+                try { view.setPointerCapture(event.pointerId); } catch { /* A host may decline pointer capture. */ }
                 onPan();
             }
             panTo(gesture.offset + dx);

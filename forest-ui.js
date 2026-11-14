@@ -18,8 +18,8 @@
             { x: 542 / 1672, y: 771 / 941, to: 'lake', label: '回到静湖' },
         ] },
     };
-    const clips = Object.fromEntries(Object.keys(locations).map(id => [id, find('.' + id)]));
     const view = find('.view'), choices = find('.plants'), veil = find('.scene-veil');
+    const motion = ForestMedia.sceneMotion(find('.scene-still'), find('.scene-clip'));
     const nameplate = find('.plant-nameplate');
     const touchControls = matchMedia('(hover: none) and (pointer: coarse)');
     const plantScale = 1.67;
@@ -32,7 +32,7 @@
     const tool = find('.garden-tool'), instruction = find('.garden-instruction');
     const travelTool = find('.garden-scene'), ghost = find('.plant-ghost');
     let place = 'oak', cards = [], unlocked = [], viewMode = 'forest';
-    let readingPlant = null, approached = null;
+    let readingPlant = null, approached = null, plantSignature = '';
     try {
         const saved = localStorage.getItem(startKey);
         if (Object.hasOwn(locations, saved)) place = saved;
@@ -40,7 +40,8 @@
 
     let journey = 0, traveling = false, selecting = false;
     let landing = null, pointer = null, placing = null, picking = null;
-    let request = 0, saving = null, noticeTimer;
+    let request = 0, saving = null, noticeTimer, openingTimer;
+    let catalogSignature, pendingCatalog, heldControl, releaseTimer;
     const botany = ForestBotany.create(find('.botany'), reduced, {
         visible: () => viewMode === 'forest',
         wind: () => ({ breeze: 1.18, wind: 2.05, rain: .82, storm: 2.45 })[weather],
@@ -58,19 +59,10 @@
     });
 
     function syncMotion() {
-        const clip = clips[place];
-        for (const other of Object.values(clips)) if (other !== clip) other.pause();
-        const paused = reduced.matches || document.hidden || viewMode === 'closed';
-        if (paused) {
-            clip.pause();
-        } else {
-            if (!clip.getAttribute('src')) {
-                const version = place === 'falls' ? '1.3.1' : '1.1.1';
-                clip.src = `${place}-breeze.mp4?v=${version}`;
-            }
-            clip.playbackRate = ({ breeze: 1, wind: 1.55, rain: .84, storm: 1.43 })[weather];
-            clip.play().catch(() => {});
-        }
+        motion.update(place, {
+            paused: reduced.matches || document.hidden || viewMode === 'closed',
+            rate: ({ breeze: 1, wind: 1.55, rain: .84, storm: 1.43 })[weather],
+        });
         botany.invalidate();
     }
 
@@ -78,9 +70,6 @@
         clearApproach();
         place = next;
         scene.dataset.place = next;
-        for (const [id, clip] of Object.entries(clips)) clip.hidden = id !== next;
-        const current = clips[next];
-        if (!current.poster && current.dataset.poster) current.poster = current.dataset.poster;
         camera.setScene(next);
         camera.reset();
         renderPlants();
@@ -193,13 +182,16 @@
         closeCatalog();
         lockScene();
         if (!alreadyClose) await camera.approach(button, plantScale, 590);
-        if (thisJourney === journey) write('character', { id: card.id, via: 'plant' });
+        if (thisJourney === journey) openChat(card, 'plant');
     }
 
     function renderPlants() {
-        clearApproach(260);
         const planted = cards.filter(card => card.plant && card.spot?.scene === place)
             .sort((a, b) => a.spot.y - b.spot.y);
+        const signature = JSON.stringify([place, planted.map(({ id, name, plant, spot }) => [id, name, plant.id, spot.x, spot.y])]);
+        if (signature === plantSignature) return;
+        plantSignature = signature;
+        clearApproach(260);
         const fragment = document.createDocumentFragment();
         choices.setAttribute('aria-label', locations[place].name + '的花草');
         for (const card of planted) {
@@ -218,7 +210,7 @@
                     if (approached.ready) void openPlant(card, button, true);
                     return;
                 }
-                const touch = event.pointerType === 'touch' ||
+                const touch = event.pointerType === 'touch' || event.sourceCapabilities?.firesTouchEvents ||
                     (!event.pointerType && event.detail > 0 && touchControls.matches);
                 if (touch) void approachPlant(card, button);
                 else void openPlant(card, button);
@@ -272,7 +264,23 @@
         closeCatalog();
         lockScene();
         flash('');
-        write('character', { id: card.id, via: 'catalog' });
+        openChat(card, 'catalog');
+    }
+
+    function openChat(card, via) {
+        clearTimeout(openingTimer);
+        openingTimer = setTimeout(() => failOpening('角色还没打开，可以再试一次。'), 15000);
+        write('character', { id: card.id, via });
+    }
+
+    function failOpening(text) {
+        clearTimeout(openingTimer);
+        selecting = false;
+        lockScene();
+        if (readingPlant) camera.reset(300);
+        else showCatalog();
+        readingPlant = null;
+        flash(text || '打开角色失败，请重试。');
     }
 
     nameplate.addEventListener('click', () => {
@@ -288,6 +296,46 @@
         write('refresh-garden');
     }
 
+    function applyCatalog(message) {
+        const signature = JSON.stringify([message.cards, message.unlocked]);
+        if (signature === catalogSignature) return;
+        catalogSignature = signature;
+        cards = message.cards;
+        unlocked = message.unlocked;
+        renderPlants();
+        if (!catalog.hidden) renderCatalog();
+        if (cultivars.open) renderCultivars();
+    }
+
+    function flushCatalog() {
+        clearTimeout(releaseTimer);
+        heldControl = undefined;
+        if (!pendingCatalog) return;
+        const latest = pendingCatalog;
+        pendingCatalog = undefined;
+        applyCatalog(latest);
+    }
+
+    addEventListener('pointerdown', event => {
+        if (!event.isPrimary || !event.target.closest('.plant, .plant-nameplate, .catalog-entry, .cultivar-choices')) return;
+        clearTimeout(releaseTimer);
+        heldControl = event.pointerId;
+    }, true);
+    function releaseControl(event) {
+        if (event.pointerId !== heldControl) return;
+        // Older mobile browsers can synthesize a click after pointerup has finished.
+        clearTimeout(releaseTimer);
+        releaseTimer = setTimeout(flushCatalog, 350);
+    }
+    addEventListener('pointerup', releaseControl);
+    addEventListener('pointercancel', releaseControl);
+    addEventListener('click', () => {
+        if (heldControl !== undefined) flushCatalog();
+    });
+    addEventListener('blur', () => {
+        if (heldControl !== undefined) releaseControl({ pointerId: heldControl });
+    });
+
     function picture(plant) {
         if (!plant) {
             const space = document.createElement('span');
@@ -297,9 +345,9 @@
         const img = new Image();
         img.className = 'plant-portrait';
         img.alt = '';
-        img.loading = 'lazy';
         img.decoding = 'async';
-        img.src = plant.src;
+        const artwork = touchControls.matches ? [plant.thumbnail, plant.src] : [plant.src, plant.thumbnail];
+        ForestMedia.useImage(img, ...artwork, plant.model?.src);
         img.draggable = false;
         return img;
     }
@@ -442,7 +490,7 @@
         closeSigns();
         flash('');
         document.body.classList.add('is-placing');
-        ghost.src = card.plant.model?.src ?? card.plant.src;
+        ForestMedia.useImage(ghost, card.plant.model?.src, card.plant.src, card.plant.thumbnail);
         populateTool(dragging);
         if (!dragging) view.focus({ preventScroll: true });
         lockScene();
@@ -480,16 +528,16 @@
 
     function armDrag(event, card) {
         if (!event.isPrimary || event.button !== 0 || !card.plant || saving) return;
-        pointer = { id: event.pointerId, card, startX: event.clientX, startY: event.clientY, drag: false };
+        pointer = { id: event.pointerId, card, startX: event.clientX, startY: event.clientY, touch: event.pointerType === 'touch', drag: false };
     }
 
     addEventListener('pointermove', event => {
         if (pointer?.id !== event.pointerId) return;
         if (!pointer.drag) {
-            if (Math.hypot(pointer.startX - event.clientX, pointer.startY - event.clientY) < 9) return;
+            if (Math.hypot(pointer.startX - event.clientX, pointer.startY - event.clientY) < (pointer.touch ? 16 : 9)) return;
             pointer.drag = true;
             // The button lives in the book we are about to close. Keep the gesture on the document.
-            document.body.setPointerCapture(event.pointerId);
+            try { document.body.setPointerCapture(event.pointerId); } catch { /* Document listeners still track the drag. */ }
             beginPlacement(pointer.card, true);
         }
         drawPlacement(event.clientX, event.clientY);
@@ -513,7 +561,7 @@
 
     view.addEventListener('pointerdown', event => {
         if (placing && !pointer?.drag && event.isPrimary && event.button === 0) {
-            landing = { id: event.pointerId, x: event.clientX, y: event.clientY };
+            landing = { id: event.pointerId, x: event.clientX, y: event.clientY, touch: event.pointerType === 'touch' };
         }
     });
     view.addEventListener('click', event => {
@@ -525,7 +573,7 @@
     view.addEventListener('pointerleave', () => { if (!pointer?.drag) ghost.hidden = true; });
     view.addEventListener('pointerup', event => {
         if (!placing || landing?.id !== event.pointerId) return;
-        const valid = Math.hypot(event.clientX - landing.x, event.clientY - landing.y) < 10;
+        const valid = Math.hypot(event.clientX - landing.x, event.clientY - landing.y) < (landing.touch ? 18 : 10);
         landing = null;
         if (valid) land(event.clientX, event.clientY);
     });
@@ -630,8 +678,9 @@
         camera.approach(approached.button, plantScale, 0);
         placeNameplate(approached.button);
     });
-    addEventListener('visibilitychange', syncMotion);
-    reduced.addEventListener('change', syncMotion);
+    document.addEventListener('visibilitychange', syncMotion);
+    if (reduced.addEventListener) reduced.addEventListener('change', syncMotion);
+    else reduced.addListener(syncMotion);
     function sendWeather() {
         write('weather', { value: weather });
     }
@@ -648,11 +697,12 @@
                 if (viewMode === 'reading') setForestWeather(message.value);
                 return;
             case 'catalog':
-                cards = message.cards;
-                unlocked = message.unlocked;
-                renderPlants();
-                if (!catalog.hidden) renderCatalog();
-                if (cultivars.open) renderCultivars();
+                // Do not rebuild the buttons between a finger going down and its click.
+                if (heldControl !== undefined) pendingCatalog = message;
+                else {
+                    pendingCatalog = message;
+                    flushCatalog();
+                }
                 return;
             case 'theme-options':
                 themeSwitches.replaceChildren(...message.themes.map(({ id, label }) => {
@@ -676,18 +726,14 @@
                 saving = null;
                 return;
             case 'failed':
-                selecting = false;
-                lockScene();
-                if (readingPlant) camera.reset(300);
-                else showCatalog();
-                readingPlant = null;
-                flash(message.text || '打开角色失败，请重试。');
+                failOpening(message.text);
                 return;
             case 'view': {
                 const wasReading = viewMode === 'reading';
                 viewMode = message.mode;
                 document.body.classList.toggle('forest-book-backdrop', viewMode === 'reading');
                 if (viewMode !== 'forest') {
+                    clearTimeout(openingTimer);
                     ++journey;
                     traveling = false;
                     selecting = false;
@@ -708,6 +754,9 @@
             }
         }
     });
+    const paper = new Image();
+    paper.onload = () => document.documentElement.style.setProperty('--forest-panel-paper', `url("${paper.src}")`);
+    ForestMedia.useImage(paper, 'reading-paper-edge.png', 'reading-paper-edge.webp');
     showLocation(place);
     write('ready');
     sendWeather();

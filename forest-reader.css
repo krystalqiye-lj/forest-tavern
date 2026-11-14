@@ -88,7 +88,7 @@ body.forest-tavern-reading .forest-reader-tools {
     text-align: start;
     padding: 14px 15px 16px;
     border: 0;
-    background: transparent url("./reading-paper-edge.webp") center / 100% 100% no-repeat;
+    background: var(--forest-panel-paper, linear-gradient(110deg, #f7efd8, #eee1c2)) center / 100% 100% no-repeat;
     color: #302d24;
     filter: brightness(var(--forest-page-light)) drop-shadow(0 5px 10px #20271860);
     font: 14px/1.45 "PingFang SC", "Microsoft YaHei", sans-serif;

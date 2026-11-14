@@ -17,7 +17,8 @@ const volumePreference = 'forest-ambience-volume';
 let weather = 'breeze';
 let soundScene = 'oak';
 let ambientVolume = 80;
-let audio, ambience, music;
+let audio, music;
+const ambience = { enabled: false, tracks: new Map(), request: null, status: '' };
 
 try {
     const saved = localStorage.getItem(volumePreference);
@@ -30,89 +31,132 @@ async function initAudio() {
     if (!audio) {
         const Context = window.AudioContext || window.webkitAudioContext;
         if (!Context) throw Error('AudioContext unavailable');
-        audio = new Context();
+        try { audio = new Context({ sampleRate: 24000 }); }
+        catch { audio = new Context(); }
     }
     if (audio.state !== 'running') await audio.resume();
 }
 
-function makeTrack() {
-    const element = new Audio();
-    element.preload = 'none';
-    element.loop = true;
+async function loadRecording(filename, signal) {
+    // A full fetch can play even when the browser cannot stream ranged media.
+    const response = await fetch(filename, { signal });
+    if (!response.ok) throw new Error('Recording unavailable');
+    const bytes = await response.arrayBuffer();
+    return new Promise((resolve, reject) => {
+        audio.decodeAudioData(bytes, resolve, reject);
+    });
+}
+
+function startRecording(buffer) {
+    const node = audio.createBufferSource();
+    node.buffer = buffer;
+    node.loop = true;
     const gain = audio.createGain();
     gain.gain.value = 0;
-    audio.createMediaElementSource(element).connect(gain).connect(audio.destination);
-    return { element, gain, stopTimer: 0 };
+    gain.gain.setValueAtTime(0, audio.currentTime);
+    node.connect(gain).connect(audio.destination);
+    node.onended = () => {
+        node.disconnect();
+        gain.disconnect();
+    };
+    node.start();
+    return { node, gain };
 }
 
 function glide(track, target) {
     const level = track.gain.gain;
     const now = audio.currentTime;
-    if (level.cancelAndHoldAtTime) level.cancelAndHoldAtTime(now);
-    else {
-        const current = level.value;
-        level.cancelScheduledValues(now);
-        level.setValueAtTime(current, now);
-    }
+    const previous = track.fade;
+    const elapsed = previous ? Math.min(1, Math.max(0, (now - previous.at) / .24)) : 0;
+    const current = previous ? previous.from + (previous.to - previous.from) * elapsed : 0;
+    level.cancelScheduledValues(now);
+    level.setValueAtTime(current, now);
     level.linearRampToValueAtTime(target, now + .24);
+    track.fade = { at: now, from: current, to: target };
+}
+
+function desiredRecordings() {
+    const atFalls = soundScene === 'falls';
+    const background = atFalls ? fallsWeatherGains[weather] : weatherGains[weather];
+    const result = new Map();
+    if (background > 0) result.set(weatherTracks[weather], background);
+    if (atFalls) result.set('waterfall-ambience.m4a', fallsGains[weather]);
+    return result;
 }
 
 function applyVolume() {
-    if (!ambience?.enabled) return;
+    if (!ambience.enabled) return;
     const master = (ambientVolume / 100) ** 1.45;
-    const atFalls = soundScene === 'falls';
-    glide(ambience.recording, master * (atFalls ? fallsWeatherGains[weather] : weatherGains[weather]));
-    glide(ambience.falls, master * (atFalls ? fallsGains[weather] : 0));
+    const levels = desiredRecordings();
+    for (const [filename, track] of ambience.tracks) {
+        glide(track, master * (levels.get(filename) ?? 0));
+    }
 }
 
-function cue(track, filename, playing) {
-    clearTimeout(track.stopTimer);
-    const player = track.element;
-    if (playing) {
-        if (player.getAttribute('src') !== filename) player.src = filename;
-        return player.paused ? player.play() : Promise.resolve();
-    }
-    track.stopTimer = setTimeout(() => player.pause(), 290);
-    return Promise.resolve();
-}
-
-async function playAmbience() {
-    await initAudio();
-    if (!document.getElementById('ambience')?.checked) return;
-    if (!ambience) {
-        ambience = { recording: makeTrack(), falls: makeTrack(), enabled: true };
-    }
-    ambience.enabled = true;
-    const atFalls = soundScene === 'falls';
-    applyVolume();
-    await Promise.all([
-        cue(ambience.recording, weatherTracks[weather], !atFalls || fallsWeatherGains[weather] > 0),
-        cue(ambience.falls, 'waterfall-ambience.m4a', atFalls),
-    ]);
+function stopRecording(filename, track) {
+    glide(track, 0);
+    track.node.stop(audio.currentTime + .26);
+    ambience.tracks.delete(filename);
 }
 
 function stopAmbience() {
-    if (!ambience) return;
     ambience.enabled = false;
-    for (const track of [ambience.recording, ambience.falls]) {
-        glide(track, 0);
-        cue(track, '', false);
-    }
+    ambience.request?.abort();
+    for (const [filename, track] of ambience.tracks) stopRecording(filename, track);
+    soundStatus('');
 }
 
-function reportAudioError(error) {
-    if (error?.name === 'AbortError') return;
-    stopAmbience();
-    const input = document.getElementById('ambience');
-    if (input) input.checked = false;
-    const message = document.querySelector('output.weather-status');
-    if (message) message.textContent = '暂时无法播放这段环境音';
+function soundStatus(text) {
+    ambience.status = text;
+    const output = document.querySelector('output.weather-status');
+    if (output) output.textContent = text;
+}
+
+async function playAmbience() {
+    ambience.enabled = true;
+    ambience.request?.abort();
+    const controller = new AbortController();
+    ambience.request = controller;
+    const signal = controller.signal;
+    const wanted = desiredRecordings();
+    const timeout = setTimeout(() => {
+        if (signal.aborted) return;
+        stopAmbience();
+        const input = document.getElementById('ambience');
+        if (input) input.checked = false;
+        soundStatus('环境音载入超时，可点一下重试。');
+    }, 12000);
+    try {
+        // Resume in the trusted tap, before fetching or decoding a recording.
+        await initAudio();
+        if (signal.aborted) return;
+        const missing = [...wanted.keys()].filter(filename => !ambience.tracks.has(filename));
+        if (missing.length) soundStatus('正在载入环境音…');
+        await Promise.all(missing.map(async filename => {
+            const buffer = await loadRecording(filename, signal);
+            if (!signal.aborted) ambience.tracks.set(filename, startRecording(buffer));
+        }));
+        if (signal.aborted) return;
+        for (const [filename, track] of ambience.tracks) {
+            if (!wanted.has(filename)) stopRecording(filename, track);
+        }
+        applyVolume();
+        soundStatus('');
+    } catch (error) {
+        if (signal.aborted) return;
+        stopAmbience();
+        const input = document.getElementById('ambience');
+        if (input) input.checked = false;
+        soundStatus(error.name === 'NotAllowedError' ? '请再点一次环境音以开始播放。' : '环境音未能加载，可点一下重试。');
+    } finally {
+        clearTimeout(timeout);
+    }
 }
 
 function setWeatherScene(next) {
     if (soundScene !== next) {
         soundScene = next;
-        if (ambience?.enabled) playAmbience().catch(reportAudioError);
+        if (ambience.enabled) void playAmbience();
     }
     forestRain.set(next, weather);
 }
@@ -126,7 +170,7 @@ function setForestWeather(next) {
     }
     forestRain.set(soundScene, weather);
     window.dispatchEvent(new Event('forest-weather-change'));
-    if (ambience?.enabled) playAmbience().catch(reportAudioError);
+    if (ambience.enabled) void playAmbience();
 }
 
 function playPhrase() {
@@ -174,7 +218,8 @@ function weatherPanel(panel) {
     slider.value = String(ambientVolume);
     readout.value = ambientVolume + '%';
     slider.setAttribute('aria-valuetext', readout.value);
-    sound.checked = Boolean(ambience?.enabled);
+    sound.checked = ambience.enabled;
+    panel.querySelector('.weather-status').textContent = ambience.status;
     musicToggle.checked = Boolean(music);
     for (const [value, label] of Object.entries(weatherNames)) {
         const button = document.createElement('button');
@@ -196,7 +241,7 @@ function weatherPanel(panel) {
         try { localStorage.setItem(volumePreference, String(ambientVolume)); } catch { /* Browser storage is optional. */ }
     });
     sound.addEventListener('change', () => {
-        if (sound.checked) playAmbience().catch(reportAudioError);
+        if (sound.checked) void playAmbience();
         else stopAmbience();
     });
     musicToggle.addEventListener('change', async () => {
