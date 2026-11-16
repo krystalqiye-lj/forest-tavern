@@ -6,6 +6,6 @@
     "js": "index.js",
     "css": "style.css",
     "author": "lanjiu",
-    "version": "1.4.1",
+    "version": "1.4.2",
     "scenic_theme": { "id": "forest", "label": "林间拾叶", "order": 10 }
 }
